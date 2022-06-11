@@ -2,6 +2,7 @@
 The BDS upgrade package is provided here, but Mojang does not currently provide it.
 
 ## Download
+![GitHub Releases](https://shields.io/github/downloads/Redbeanw44602/BDS-Upgrade-Package/total?style=for-the-badge)<br>
 This repo will save: the upgrade package of the last version of the previous major version and the minor upgrade pack of the current major version.
 
 ## Generator
@@ -21,6 +22,18 @@ All works done.
  - Now the content files of the upgrade package have been generated under output\ (including scripts for changing files and deleting old files)
 
 ## Histroy Versions
+
+### 1.18
+ - 1.18.0.02
+ - 1.18.1.02
+ - 1.18.2.03
+ - 1.18.11.01
+ - 1.18.12.01
+ - 1.18.30.04
+ - 1.18.31.04
+ - 1.18.32.02
+ - 1.18.33.02
+
 
 ### 1.17
  - 1.17.0.03
