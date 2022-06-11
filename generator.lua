@@ -1,21 +1,24 @@
-local fs = require('FileSystem')
+package.path = package.path..';.\\share\\?.lua'
+package.cpath = package.cpath..';.\\lib\\?.dll'
+
+local fs = require('filesystem')
 local version = {
-    old = "1.18.1.02",
-    new = "1.18.2.03"
+    old = "1.18.33.02",
+    new = "1.19.1.01"
 }
 
-PATH = { current = fs.getCurrentPath() }
-PATH.old = PATH.current..'bedrock-server-'..version.old..'\\'
-PATH.new = PATH.current..'bedrock-server-'..version.new..'\\'
+PATH = { current = fs:getCurrentPath() }
+PATH.old = PATH.current..'bedrock-server-'..version.old
+PATH.new = PATH.current..'bedrock-server-'..version.new
 PATH.output = PATH.current..'output\\'
 
 --- Checks
-if fs.isExist(PATH.new) then
+if fs:isExist(PATH.new) then
     print('checking path('..version.new..') ...')
 else
     error('something wrong when checking path('..version.new..').')
 end
-if fs.isExist(PATH.old) then
+if fs:isExist(PATH.old) then
     print('checking path('..version.old..') ...')
 else
     error('something wrong when checking path('..version.old..').')
@@ -24,8 +27,8 @@ end
 --- Gen file list
 print('creating file list ...')
 local file_list = {
-    new = fs.getDirectoryList(PATH.new),
-    old = fs.getDirectoryList(PATH.old)
+    new = fs:getDirectoryList(PATH.new),
+    old = fs:getDirectoryList(PATH.old)
 }
 
 local path_lengths = {
@@ -95,7 +98,7 @@ print(version.new..' (File) -> '..#res.new..'++, '..#res.old..'--')
 local need_compare_files = array_Minus(file_list.new,array_Plus(res.new,res.old))
 print(version.new..' (Cont) -> comparing '..#need_compare_files..' files ...')
 for i,filename in pairs(need_compare_files) do
-    if (fs.getType(PATH.new..filename) ~= 'directory' and fs.getType(PATH.old..filename) ~= 'directory') and not(fs.isSame(PATH.new..filename,PATH.old..filename)) then
+    if (fs:getType(PATH.new..filename) ~= 'directory' and fs:getType(PATH.old..filename) ~= 'directory') and not(fs:isSame(PATH.new..filename,PATH.old..filename)) then
         need_pack_files[#need_pack_files+1] = filename
     end
 end
@@ -110,36 +113,36 @@ function getPathByFile(filepath)
     local loc = string.len(filepath) - p
     return string.sub(filepath,1,loc)
 end
-if not fs.isExist(PATH.output) then
-    fs.mkdir(PATH.output)
+if not fs:isExist(PATH.output) then
+    fs:mkdir(PATH.output)
 end
 for i,file in pairs(need_pack_files) do -- change
     local path = getPathByFile(file)
-    if not fs.isExist(PATH.output..path) then
-        fs.mkdir(PATH.output..path)
+    if not fs:isExist(PATH.output..path) then
+        fs:mkdir(PATH.output..path)
     end
-    fs.copy(PATH.output..file,PATH.new..file)
+    fs:copy(PATH.output..file,PATH.new..file)
 end
 for i,file in pairs(res.new) do -- new
-    if fs.getType(PATH.new..file) ~= 'directory' then
+    if fs:getType(PATH.new..file) ~= 'directory' then
         local path = getPathByFile(file)
-        if not fs.isExist(PATH.output..path) then
-            fs.mkdir(PATH.output..path)
+        if not fs:isExist(PATH.output..path) then
+            fs:mkdir(PATH.output..path)
         end
-        fs.copy(PATH.output..file,PATH.new..file)
+        fs:copy(PATH.output..file,PATH.new..file)
     end
 end
 if #need_remove_files~=0 then -- remove
     local bat_cont = "@echo off\n\n:: "..version.new.." removed files\n"
     for i,file in pairs(need_remove_files) do
-        if fs.getType(PATH.old..file)~='directory' then
+        if fs:getType(PATH.old..file)~='directory' then
             bat_cont = bat_cont..'del '..file..'\n'
         else
             bat_cont = bat_cont..'rmdir '..file..' /s /q \n'
         end
     end
     bat_cont = bat_cont.."pause"
-    fs.writeTo(PATH.output..'removeOldFiles.bat',bat_cont)
+    fs:writeTo(PATH.output..'removeOldFiles.bat',bat_cont)
 end
 
 print('All works done.')
